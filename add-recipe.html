@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Recipe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="recipes-page add-page">
+<script>
+    // redirect if not logged in
+    const logged = localStorage.getItem('loggedIn');
+    if(!logged){
+        window.location.href='login.html';
+    }
+</script>
+
+<header class="masthead">
+    <h1 id="page-title">Add a Recipe</h1>
+    <p>Save ingredients, instructions, and an optional video</p>
+</header>
+
+<nav class="topnav" aria-label="Primary">
+    <div class="nav-inner container">
+        <div class="nav-links">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="search.html">Search</a>
+            <a class="nav-link" href="recipes.html">All Recipes</a>
+            <a class="nav-link" href="add-recipe.html">Add Recipe</a>
+            <a class="nav-link" href="account.html">Account</a>
+        </div>
+        <div id="auth-info" class="nav-auth"></div>
+    </div>
+</nav>
+<script>
+    (function(){
+        const info = document.getElementById('auth-info');
+        const user = JSON.parse(localStorage.getItem('loggedIn'));
+        if(user){
+            const name = user.username || user.email || 'Account';
+            info.innerHTML = `
+                <span class="auth-pill">Hello <strong>${name}</strong></span>
+                <a class="nav-link nav-logout" href="#" id="logout-btn">Logout</a>
+            `;
+            document.getElementById('logout-btn').addEventListener('click',(e)=>{
+                e.preventDefault();
+                localStorage.removeItem('loggedIn');
+                window.location.href='login.html';
+            });
+        }
+    })();
+</script>
+
+<main class="container">
+    <section class="card form-shell" id="add-recipe">
+        <div class="card-head">
+            <h3 id="form-title">New Recipe</h3>
+            <div class="head-actions">
+                <a class="btn btn-ghost" href="recipes.html">Back to all</a>
+            </div>
+        </div>
+
+        <form id="recipe-form">
+            <label for="title">Recipe name:</label><br>
+            <input type="text" id="title" name="title" required><br><br>
+
+            <div class="form-grid">
+                <div>
+                    <label for="cook-time">Cook time (minutes):</label><br>
+                    <input type="number" id="cook-time" min="0" step="1" placeholder="e.g. 20">
+                </div>
+                <div>
+                    <label for="servings">Servings:</label><br>
+                    <input type="number" id="servings" min="0" step="1" placeholder="e.g. 2">
+                </div>
+            </div>
+            <br>
+
+            <label>Tags:</label>
+            <div class="checks">
+                <label><input type="checkbox" name="tags" value="vegetarian"> Vegetarian</label>
+                <label><input type="checkbox" name="tags" value="vegan"> Vegan</label>
+                <label><input type="checkbox" name="tags" value="gluten-free"> Gluten-free</label>
+                <label><input type="checkbox" name="tags" value="dairy-free"> Dairy-free</label>
+                <label><input type="checkbox" name="tags" value="nut-free"> Nut-free</label>
+                <label><input type="checkbox" name="tags" value="egg-free"> Egg-free</label>
+            </div>
+            <br>
+
+            <label>Ingredients (quantity + name):</label>
+            <div id="ingredients-container">
+                <div class="ingredient-row">
+                    <input type="text" class="ing-qty" placeholder="qty" required>
+                    <input type="text" class="ing-name" placeholder="ingredient" required>
+                    <button type="button" class="remove-ingredient">✖</button>
+                </div>
+            </div>
+            <button type="button" id="add-ingredient" class="btn btn-secondary">Add ingredient</button><br><br>
+
+            <label for="instructions">Instructions:</label><br>
+            <textarea id="instructions" name="instructions" rows="5" required></textarea><br><br>
+
+            <label for="video-url">Recipe video (optional):</label><br>
+            <input type="url" id="video-url" placeholder="YouTube link or any https:// video page">
+            <div class="tool-actions">
+                <button type="button" id="preview-video" class="btn btn-secondary">Preview</button>
+                <small class="muted">We’ll save the link; YouTube links show an embed.</small>
+            </div>
+            <div id="video-preview" class="video-preview hidden" aria-hidden="true"></div>
+            <br>
+
+            <button type="submit" class="btn btn-primary">Save Recipe</button>
+        </form>
+    </section>
+</main>
+
+<script src="add-recipe.js"></script>
+</body>
+</html>
